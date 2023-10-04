@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}{% endblock %}
+
+{% block body %}
+<style>
+    .body_parent { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .card_styles { margin: 4px; width: 18rem; }
+    .footer_card { margin-bottom: 8px; }
+    .footer_card a { width: 100%; font-weight: bold }
+    .content { display: flex; justify-content: center; text-align: center; }
+</style>
+
+<div class="body_parent">
+    {{ parent() }}
+
+    <div class="row content">
+        {% for joke in jokes %}
+            <div class="card col-4 card_styles">
+                <!--<img class="card-img-top" src="{{ asset('img/chuck_img.png') }}" alt="Card image cap">-->
+                <div class="card-body">
+                    <p class="card-text">{{ joke.value }}</p>
+                </div>
+                <div class="footer_card">
+                    <a href="{{ joke.getUrl() }}" target="_blank" class="btn btn-primary">Visitar sitio oficial</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

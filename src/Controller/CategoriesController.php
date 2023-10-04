@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Joke;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,50 +12,39 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use function Sodium\add;
 
 class CategoriesController extends AbstractController
 {
     public function __construct(
         private readonly HttpClientInterface $client,
         public array $categories = array(),
+        public array $categoriesUpper = array(),
     ) {
     }
 
     #[Route('/', name: 'app_categories')]
     public function index(): Response
     {
-        $this->getNewJoke();
+        $this->getAllCategories();
 
         return $this->render('categories/index.html.twig', [
-            'controller_name' => 'David',
-            'categories' => $this->categories
+            'categories' => $this->categories,
+            'categoriesUpperCase' => $this->categoriesUpper,
         ]);
     }
 
-    public function getNewJoke() {
-        $this->categories = $this->getCategories();
-    }
-
-    /**
-     * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     */
-    private function getRandomJoke(): array
+    public function getAllCategories(): void
     {
-        $response = $this->client->request(
-            'GET',
-            'https://api.chucknorris.io/jokes/random'
-        );
+        $array = array();
 
-        $statusCode = $response->getStatusCode();
-        $contentType = $response->getHeaders()['content-type'][0];
-        $content = $response->getContent();
-        $content = $response->toArray();
+        $this->categoriesUpper = $this->getCategories();
 
-        return $content;
+        foreach ($this->categoriesUpper as $category) {
+            array_push($array, ucfirst($category));
+        }
+
+        $this->categories = $array;
     }
 
     private function getCategories(): array

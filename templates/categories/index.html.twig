@@ -5,19 +5,30 @@
 {% block body %}
 <style>
     .body { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .content { display: flex; justify-content: center; align-items: center }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .content { display: flex; justify-content: center; align-items: center; text-align: center; }
 </style>
 
 
 <div class="body">
     {{ parent() }}
-    <h1>Hola {{ controller_name }}!</h1>
+    <h1>Bienvenido! Selecciona una categoría</h1>
 
-    <div class="content">
-        {% for category in categories %}
-            <a><button onclick="window.location.href='{{ path('joke', {id: category}) }}'">{{ category }}</button></a><br>
-        {% endfor %}
+    <div class="row" style="margin-top: 16px">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="row content">
+                {% for category in categories %}
+                    <a href="{{ path('joke', { id: categoriesUpperCase[loop.index - 1] }) }}" class="list-group-item col-4">
+                        <p class="mb-1">{{ category }}</p>
+                    </a>
+                {% endfor %}
+
+                <a href="{{ path('joke', {id: 0}) }}" class="list-group-item col-4">
+                    <p class="mb-1">Random</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-1"></div>
     </div>
 </div>
 {% endblock %}
